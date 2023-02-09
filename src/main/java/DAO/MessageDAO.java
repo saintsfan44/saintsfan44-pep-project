@@ -97,7 +97,7 @@ public class MessageDAO {
         }
     }
 
-    public List<Message> getMessagesFromUser() {
+    //public List<Message> getMessagesFromUser() {
 
-    }
+    //}
 }

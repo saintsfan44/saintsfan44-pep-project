@@ -1,8 +1,14 @@
 package Controller;
 
+
+
+import java.util.List;
+
+import Model.Message;
 import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
+import javafx.application.Application;
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -22,11 +28,11 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         app.get("example-endpoint", this::exampleHandler);
-        app.get("localhost:8080/messages", this::getAllMessagesHandler);
-        app.get("localhost:8080/messages/{message_id}", this::getMessageByIdHandler);
-        app.delete("localhost:8080/messages/{message_id}", this::deleteMessageByIdHandler);
-        app.patch("localhost:8080/messages/{message_id}", this::updateMessageTxtById);
-        app.get("localhost:8080/accounts/{account_id}/messages", this::getMessagesFromUserHandler)
+        app.get("/messages", this::getAllMessagesHandler);
+        //app.get("localhost:8080/messages/{message_id}", this::getMessageByIdHandler);
+        //app.delete("localhost:8080/messages/{message_id}", this::deleteMessageByIdHandler);
+        //app.patch("localhost:8080/messages/{message_id}", this::updateMessageTxtById);
+        //app.get("localhost:8080/accounts/{account_id}/messages", this::getMessagesFromUserHandler)
 
 
         return app;
@@ -41,7 +47,9 @@ public class SocialMediaController {
     }
 
     private void getAllMessagesHandler(Context context){
-        context.json(messageService.getAllMessages());
+        List<Message>messages = messageService.getAllMessages();
+        context.json(messages);
+        context.status(200);
     }
 
 
