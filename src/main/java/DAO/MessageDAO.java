@@ -78,7 +78,7 @@ public class MessageDAO {
         
     }
 
-    public void updateMessageTxtById(int message_id, String newtxt ) {
+    public void updateMessageTxtById(int message_id, Message message ) {
         Connection connection = ConnectionUtil.getConnection();
         try {
             //Write SQL logic here
@@ -86,7 +86,7 @@ public class MessageDAO {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
             //write PreparedStatement setString and setInt methods here.
-            preparedStatement.setString(1, newtxt);
+            preparedStatement.setString(1, message.message_text);
             preparedStatement.setInt(2, message_id);
             
 
@@ -97,7 +97,29 @@ public class MessageDAO {
         }
     }
 
-    //public List<Message> getMessagesFromUser() {
+    public List<Message> getMessagesFromUser(int posted_by) {
+        Connection connection = ConnectionUtil.getConnection();
+        List<Message> messages = new ArrayList<>();
+        try {
+            //Write SQL logic here
+            String sql = "SELECT * FROM message WHERE account_id = ?";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-    //}
+            //write PreparedStatement setString and setInt methods here.
+            preparedStatement.setInt(1, posted_by);
+            
+
+            ResultSet rs = preparedStatement.executeQuery();
+            while(rs.next()){
+                Message message = new Message(rs.getInt("message_id"),
+                rs.getInt("posted_by"),
+                rs.getString("message_text"),
+                rs.getInt("time_posted_epoch"));
+                messages.add(message);
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return messages;
+    }
 }

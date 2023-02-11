@@ -1,7 +1,7 @@
-commit 75e73e56927de0d1a22d6c5a0f3e7893d8c1fb72
+commit 9cc1e0b901f6686b9f90834542d12ce34c0bc274
 Author: saintsfan44 <zyquesej@gmail.com>
-Date:   Thu Feb 9 21:17:55 2023 +0000
+Date:   Thu Feb 9 22:49:01 2023 +0000
 
-    Worked on the message DAO and started endpoints
+    Fixed the Get all message handler
 
- 5 files changed, 218 insertions(+)
+ 4 files changed, 67 insertions(+), 8 deletions(-)

@@ -30,7 +30,16 @@ public class MessageService {
         messageDAO.deleteMessageById(message_id);
     }
 
-    public void updateMessageTxtById(int message_id, String newtxt){
-        messageDAO.updateMessageTxtById(message_id, newtxt);
+    public Message updateMessageTxtById(int message_id, Message message){
+        if(messageDAO.getMessageById(message_id) == null){
+            return null;
+        }else{
+           return messageDAO.getMessageById(message_id);
+        }
+        
+    }
+
+    public List<Message> getMessagesFromUser(int posted_by){
+        return messageDAO.getMessagesFromUser(posted_by);
     }
 }
