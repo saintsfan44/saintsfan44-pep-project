@@ -12,6 +12,31 @@ import Util.ConnectionUtil;
 
 public class MessageDAO {
 
+    public Message insertMessage(Message message){
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "INSERT INTO message (message_id, message_text, time_posted_epoch, posted_by) VALUES (?, ?, ?, ?) ";
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             
+            preparedStatement.setInt(1, message.message_id);
+            preparedStatement.setString(2, message.message_text);
+            preparedStatement.setLong(3, message.time_posted_epoch);
+            preparedStatement.setInt(4, message.posted_by) ;
+
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if(rs.next()){
+                return new Message(rs.getInt("message_id"),
+                rs.getInt("posted_by"),
+                rs.getString("message_text"),
+                rs.getInt("time_posted_epoch"));
+            }
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
 
 
     public List<Message> getAllMessages(){

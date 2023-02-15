@@ -10,15 +10,16 @@ import Util.ConnectionUtil;
 
 public class AccountDAO {
 
-    public Account insertAccount(Account account){
+    public Account postAccount(Account account){
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "INSERT INTO account (username, password) VALUES (?, ?) ";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-             
+
+            
             preparedStatement.setString(1, account.username);
             preparedStatement.setString(2, account.password);
-
+            
             preparedStatement.executeUpdate();
             ResultSet pkeyResultSet = preparedStatement.getGeneratedKeys();
             if(pkeyResultSet.next()){
@@ -39,8 +40,8 @@ public class AccountDAO {
             String sql = "SELECT * FROM account WHERE username = ? AND password = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
 
-            ps.setString(1, account.getUsername());
-            ps.setString(2, account.getPassword());
+            ps.setString(1, account.username);
+            ps.setString(2, account.password);
 
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -56,4 +57,48 @@ public class AccountDAO {
         }
         return null;
     }
-}
+
+    public Account getAccountByUsername(String username){
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * FROM account WHERE username = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Account account = new Account(rs.getInt("account_id"),
+                rs.getString("username"),
+                rs.getString("password"));
+                return account;
+
+            }
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+    }
+
+    public boolean isUsernameDuplicate(String username) {
+        boolean exists = false;
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT COUNT(*) FROM account WHERE username = ?";
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setString(1, username);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                int count = resultSet.getInt(1);
+                if (count > 0) {
+                    exists = true;
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        } 
+        return exists;
+    }
+ }
+
+

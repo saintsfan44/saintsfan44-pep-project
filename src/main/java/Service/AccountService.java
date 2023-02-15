@@ -16,11 +16,19 @@ public class AccountService {
 
 
 
-    public Account insertAccount(Account account){
-        return accountDAO.insertAccount(account);
+    public Account postAccount(Account account){
+        return accountDAO.postAccount(account);
     }
 
     public Account getUserAccount(Account account){
         return accountDAO.getUserAccount(account);
     }
+
+   public Account getAccountByUsername(String username){
+        return accountDAO.getAccountByUsername(username);
+   }
+
+   public boolean isUsernameDuplicate(String username){
+        return accountDAO.isUsernameDuplicate(username);
+   }
 }

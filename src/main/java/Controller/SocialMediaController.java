@@ -13,7 +13,7 @@ import Service.AccountService;
 import Service.MessageService;
 import io.javalin.Javalin;
 import io.javalin.http.Context;
-import javafx.application.Application;
+
 
 /**
  * TODO: You will need to write your own endpoints and handlers for your controller. The endpoints you will need can be
@@ -35,10 +35,11 @@ public class SocialMediaController {
     public Javalin startAPI() {
         Javalin app = Javalin.create();
         //Account Endpoints
-        app.post("/register", this::insertAccountHandler);
+        app.post("/register", this::postAccountHandler);
         app.post("/login", this::getUserAccountHandler);
 
         //Message Endpoints
+        app.post("/messages", this::insertMessageHandler);
         app.get("example-endpoint", this::exampleHandler);
         app.get("/messages", this::getAllMessagesHandler);
         app.get("/messages/{message_id}", this::getMessageByIdHandler);
@@ -58,24 +59,58 @@ public class SocialMediaController {
         context.json("sample text");
     }
 
-    //Account Handler
-    private void insertAccountHandler(Context context) throws JsonProcessingException{
+    //Account Handlers
+    private void postAccountHandler(Context context) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(context.body(), Account.class);
-        Account addedAccount = accountService.insertAccount(account);
-        if(addedAccount == null){
-            context.status(400);
+        Account accountToBeAdded = accountService.getUserAccount(account);
+
+        //if(account == null || accountService.getAccountByUsername(account.username) != null){
+            //context.status(400);
+        //}else{
+           // if(account.username == " " || account.password.length() < 4){
+                //context.status(400);
+            //}else {
+               
+                //mapper.writeValueAsString(account);
+                //context.json(account);
+                //accountService.postAccount(account);
+                
+                //context.status(200);
+            }
+        //}
+            if(accountToBeAdded ==null){
+                context.status(400)
+            }else{
+                ctx.json(mapper.writeValueAsString(accountToBeAdded));
+                accountService.postAccount(account);
+            }
+
+        
+
+    }
+ 
+    private void getUserAccountHandler(Context context)throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Account account = mapper.readValue(context.body(), Account.class);
+        if(accountService.getUserAccount(account) == null){
+            context.status(401);
         }else{
-            context.json(mapper.writeValueAsString(addedAccount));
+            context.json(mapper.writeValueAsString(account));
             context.status(200);
         }
     }
-
-    private void getUserAccountHandler(Context context){
-        
-    }
     
     //Message Handlers
+
+    private void insertMessageHandler(Context context) throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        Message message = mapper.readValue(context.body(), Message.class);
+        Message messageToAdd = messageService.insertMessage(message);
+        context.json(messageToAdd);
+    }
+
+
     private void getAllMessagesHandler(Context context){
         List<Message>messages = messageService.getAllMessages();
         context.json(messages);
@@ -117,3 +152,4 @@ public class SocialMediaController {
         //context.json(messageService.getMessagesFromUser(context.pathParam("account_id"));
     //}
 }
+
