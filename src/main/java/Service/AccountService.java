@@ -20,8 +20,8 @@ public class AccountService {
         return accountDAO.postAccount(account);
     }
 
-    public Account getUserAccount(Account account){
-        return accountDAO.getUserAccount(account);
+    public Account getUserAccount(String username, String password){
+        return accountDAO.getUserAccount(username, password);
     }
 
    public Account getAccountByUsername(String username){
@@ -30,5 +30,9 @@ public class AccountService {
 
    public boolean isUsernameDuplicate(String username){
         return accountDAO.isUsernameDuplicate(username);
+   }
+
+   public Account getAccountById(int account_id){
+        return accountDAO.getAccountById(account_id);
    }
 }

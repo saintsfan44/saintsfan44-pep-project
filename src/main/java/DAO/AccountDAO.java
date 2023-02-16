@@ -35,14 +35,14 @@ public class AccountDAO {
         
     }
 
-    public Account getUserAccount(Account account){
+    public Account getUserAccount(String username, String password){
         Connection connection = ConnectionUtil.getConnection();
         try {
             String sql = "SELECT * FROM account WHERE username = ? AND password = ?";
             PreparedStatement ps = connection.prepareStatement(sql);
 
-            ps.setString(1, account.username);
-            ps.setString(2, account.password);
+            ps.setString(1, username);
+            ps.setString(2, password);
 
             ResultSet rs = ps.executeQuery();
             while(rs.next()){
@@ -99,6 +99,29 @@ public class AccountDAO {
             System.out.println(e.getMessage());
         } 
         return exists;
+    }
+
+    public Account getAccountById(int account_id){
+        Connection connection = ConnectionUtil.getConnection();
+        try {
+            String sql = "SELECT * FROM account WHERE account_id = ?";
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ps.setInt(1, account_id);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Account account = new Account(rs.getInt("account_id"),
+                rs.getString("username"),
+                rs.getString("password"));
+                return account;
+
+            }
+
+        }catch(SQLException e){
+            System.out.println(e.getMessage());
+        }
+        return null;
+        
     }
  }
 

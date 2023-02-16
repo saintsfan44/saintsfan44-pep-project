@@ -63,19 +63,18 @@ public class SocialMediaController {
     private void postAccountHandler(Context context) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(context.body(), Account.class);
-       //Account accountToBeAdded = accountService.getUserAccount(account);
-       Account addedAccount = accountService.postAccount(account);
+        Account addedAccount = accountService.postAccount(account);
        
 
-        if(accountaddedAccount == null || accountService.getAccountByUsername(account.username) != null){
+        if(addedAccount == null || accountService.getAccountByUsername(addedAccount.username) == null){
             context.status(400);
         }else{
-            if(account.username == "" || account.password.length() < 4){
+            if(addedAccount.username == "" || addedAccount.password.length() < 4){
                 context.status(400);
             }else {
-                mapper.writeValueAsString(account);
-                accountService.postAccount(account);
-                context.json(account);
+                mapper.writeValueAsString(addedAccount);
+                accountService.postAccount(addedAccount);
+                context.json(addedAccount);
                 context.status(200);
             }
         }
@@ -86,11 +85,22 @@ public class SocialMediaController {
     private void getUserAccountHandler(Context context)throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(context.body(), Account.class);
-        if(accountService.getUserAccount(account) == null){
+        //Account accounttocheck = accountService.postAccount(account);
+        Account foundAccount = accountService.getUserAccount(account.username, account.password);
+        
+
+        if(foundAccount == null){
             context.status(401);
         }else{
-            context.json(mapper.writeValueAsString(account));
-            context.status(200);
+            //if(accountService.getUserAccount(account.username, account.password) == null){
+
+                mapper.writeValueAsString(foundAccount);
+                context.json(foundAccount);
+                context.status(200);
+            //}else{
+                //context.status(401);
+            //}
+            
         }
     }
     
@@ -100,7 +110,23 @@ public class SocialMediaController {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(context.body(), Message.class);
         Message messageToAdd = messageService.insertMessage(message);
-        context.json(messageToAdd);
+        Account postedBy = accountService.getAccountById(message.posted_by);
+
+        
+        if(messageToAdd == null){
+            context.status(400);
+        }else{
+            if(messageToAdd.message_text == "" ||  messageToAdd.message_text.length() > 255 || postedBy == null){
+                context.status(400);
+            }else{
+                mapper.writeValueAsString(messageToAdd);
+                context.json(messageToAdd);
+                context.status(200);
+            }
+
+        }
+    
+        
     }
 
 
