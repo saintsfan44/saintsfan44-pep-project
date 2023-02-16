@@ -63,29 +63,22 @@ public class SocialMediaController {
     private void postAccountHandler(Context context) throws JsonProcessingException{
         ObjectMapper mapper = new ObjectMapper();
         Account account = mapper.readValue(context.body(), Account.class);
-        Account accountToBeAdded = accountService.getUserAccount(account);
+       //Account accountToBeAdded = accountService.getUserAccount(account);
+       Account addedAccount = accountService.postAccount(account);
+       
 
-        //if(account == null || accountService.getAccountByUsername(account.username) != null){
-            //context.status(400);
-        //}else{
-           // if(account.username == " " || account.password.length() < 4){
-                //context.status(400);
-            //}else {
-               
-                //mapper.writeValueAsString(account);
-                //context.json(account);
-                //accountService.postAccount(account);
-                
-                //context.status(200);
-            }
-        //}
-            if(accountToBeAdded ==null){
-                context.status(400)
-            }else{
-                ctx.json(mapper.writeValueAsString(accountToBeAdded));
+        if(accountaddedAccount == null || accountService.getAccountByUsername(account.username) != null){
+            context.status(400);
+        }else{
+            if(account.username == "" || account.password.length() < 4){
+                context.status(400);
+            }else {
+                mapper.writeValueAsString(account);
                 accountService.postAccount(account);
+                context.json(account);
+                context.status(200);
             }
-
+        }
         
 
     }
